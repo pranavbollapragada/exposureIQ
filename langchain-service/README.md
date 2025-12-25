@@ -1,30 +1,26 @@
-# ExposureIQ — LangChain scaffold
+# ExposureIQ — LangChain Streamlit App
 
-This folder contains a FastAPI backend + Streamlit frontend for a LangChain-based service.
+This is a Streamlit-based LangChain chat interface.
 
 ## Quick start (local)
 
-1. Copy `.env.example` -> `.env` and fill in your keys.
+1. Copy `.env.example` → `.env` and fill in your API keys.
 2. `pip install -r requirements.txt`
-3. **Terminal 1 (Backend):**
-   - `uvicorn main:app --reload --port 8080`
-4. **Terminal 2 (Frontend):**
-   - `streamlit run streamlit_app.py --server.port 8501`
-5. Open http://localhost:8501 in your browser
+3. `streamlit run streamlit_app.py`
+4. Open http://localhost:8501 in your browser
 
-## Endpoints
+## Features
 
-**Backend (FastAPI):**
-- GET `/health` — health check
-- GET `/` — service info
-- POST `/chat` — chat endpoint (requires `OPENAI_API_KEY` by default)
+- Chat interface with conversation history
+- Environment variable support for API keys (LANGCHAIN_API_KEY, GROQ_API_KEY, OPENAI_API_KEY, TAVILY_API_KEY)
+- API key status indicator in sidebar
+- Clear chat history button
 
-**Frontend (Streamlit):**
-- Web UI at http://localhost:8501
-- Calls backend at `http://localhost:8080` (configurable via `BACKEND_URL` env var)
+## Deployment
+
+See `DEPLOY.md` for instructions on hosting to Hugging Face Spaces.
 
 ## Notes
 
-- **Do not** commit real API keys — use GitHub Secrets or host's secret manager.
-- The `/chat` endpoint is a placeholder; replace with your LangChain chains and vector store as needed.
-- Streamlit frontend connects to FastAPI backend via HTTP.
+- **Do not** commit `.env` with real keys.
+- The chat response is currently a placeholder; replace with your LangChain chain logic.

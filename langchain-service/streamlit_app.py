@@ -1,14 +1,14 @@
 import streamlit as st
-import requests
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 st.set_page_config(page_title="ExposureIQ - LangChain Chat", layout="wide")
 
 st.title("🔍 ExposureIQ - LangChain Assistant")
 st.markdown("Chat with your LangChain-powered AI assistant")
-
-# Backend URL configuration
-backend_url = os.getenv("BACKEND_URL", "http://localhost:8080")
 
 # Initialize session state for chat history
 if "messages" not in st.session_state:
@@ -30,41 +30,41 @@ if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
     st.chat_message("user").write(user_input)
     
-    # Call FastAPI backend
-    try:
-        with st.spinner("Thinking..."):
-            response = requests.post(
-                f"{backend_url}/chat",
-                json={"text": user_input},
-                timeout=30
-            )
-            response.raise_for_status()
-            data = response.json()
-            assistant_reply = data.get("reply", "No response from backend")
-            
-        # Add assistant message to history
-        st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
-        st.chat_message("assistant").write(assistant_reply)
-        
-    except requests.exceptions.RequestException as e:
-        st.error(f"❌ Error connecting to backend: {str(e)}")
-        st.info(f"Backend URL: {backend_url}")
+    # TODO: Wire LangChain here
+    # Example: use GROQ_API_KEY, OPENAI_API_KEY, TAVILY_API_KEY, LANGCHAIN_API_KEY
+    with st.spinner("Thinking..."):
+        # Placeholder response
+        assistant_reply = f"(Placeholder) You said: {user_input}"
+    
+    # Add assistant message to history
+    st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
+    st.chat_message("assistant").write(assistant_reply)
 
-# Sidebar with info
+# Sidebar with info and settings
 with st.sidebar:
     st.markdown("### ℹ️ About")
     st.markdown("""
     This is a **LangChain Chat** interface powered by:
-    - **Frontend:** Streamlit
-    - **Backend:** FastAPI + LangChain
-    - **LLMs:** GROQ, OpenAI, or other providers
+    - **Streamlit** web UI
+    - **LangChain** for chains
+    - **GROQ**, OpenAI, or other LLMs
+    - **Tavily** for web search (optional)
     """)
     
     st.markdown("---")
-    st.markdown("### 🔌 Backend Status")
-    try:
-        health = requests.get(f"{backend_url}/health", timeout=5).json()
-        st.success(f"✅ Backend online")
-    except:
-        st.error(f"❌ Backend offline")
-        st.code(f"URL: {backend_url}", language="text")
+    st.markdown("### 🔑 API Keys Loaded")
+    keys_status = {
+        "LANGCHAIN_API_KEY": bool(os.getenv("LANGCHAIN_API_KEY")),
+        "GROQ_API_KEY": bool(os.getenv("GROQ_API_KEY")),
+        "OPENAI_API_KEY": bool(os.getenv("OPENAI_API_KEY")),
+        "TAVILY_API_KEY": bool(os.getenv("TAVILY_API_KEY")),
+    }
+    
+    for key, loaded in keys_status.items():
+        status = "✅" if loaded else "❌"
+        st.write(f"{status} {key}")
+    
+    st.markdown("---")
+    if st.button("Clear Chat History"):
+        st.session_state.messages = []
+        st.rerun()
