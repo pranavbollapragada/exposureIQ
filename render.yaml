@@ -3,8 +3,7 @@ services:
     name: exposureiq-langchain
     runtime: docker
     plan: free
-    buildCommand: docker build -t exposureiq-langchain ./langchain-service
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    dockerfilePath: langchain-service/Dockerfile
     healthCheckPath: /health
     envVars:
       - key: LANGCHAIN_API_KEY
