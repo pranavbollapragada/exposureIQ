@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: exposureiq-langchain
+    runtime: docker
+    plan: free
+    buildCommand: docker build -t exposureiq-langchain ./langchain-service
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: LANGCHAIN_API_KEY
+        scope: run
+      - key: LANGCHAIN_PROJECT
+        scope: run
+      - key: GROQ_API_KEY
+        scope: run
+      - key: OPENAI_API_KEY
+        scope: run
+      - key: TAVILY_API_KEY
+        scope: run
